@@ -1,0 +1,235 @@
+nodemon
+nodemon é uma ferramenta que ajuda a desenvolver aplicativos baseados no node.js. reiniciando automaticamente o aplicativo do nó quando alterações de arquivo no diretório são detectadas.
+
+O nodemon não requer nenhuma alteração adicional no seu código ou método de desenvolvimento. nodemon é um invólucro de substituição para node, para nodemonsubstituir a palavra nodena linha de comandos ao executar seu script.
+
+Versão NPM Travis Status Apoiantes no Coletivo Aberto Patrocinadores no Coletivo Aberto
+
+Instalação:
+Através da clonagem com git ou usando npm (da maneira recomendada):
+
+npm install -g nodemon
+E o nodemon será instalado globalmente no caminho do sistema.
+
+Você também pode instalar o nodemon como uma dependência de desenvolvimento:
+
+npm install --save-dev nodemon
+Com uma instalação local, o nodemon não estará disponível no caminho do sistema. Em vez disso, a instalação local do nodemon pode ser executada chamando-o a partir de um script npm (como npm start) ou usando-o npx nodemon.
+
+Uso
+nodemon envolve seu aplicativo, para que você possa passar todos os argumentos que normalmente passaria para seu aplicativo:
+
+nodemon [seu aplicativo de nó]
+Para opções da CLI, use o argumento -h(ou --help):
+
+nodemon -h
+Usar nodemon é simples, se meu aplicativo aceitasse um host e uma porta como argumentos, eu o iniciaria assim:
+
+nodemon ./server.js localhost 8080
+Qualquer saída desse script é prefixada [nodemon]; caso contrário, toda a saída do seu aplicativo, incluindo os erros, será repetida conforme o esperado.
+
+Se nenhum script for fornecido, o nodemon testará um package.jsonarquivo e, se encontrado, executará o arquivo associado à propriedade principal ( ref ).
+
+Você também pode passar o inspectsinalizador para o nó pela linha de comando, como faria normalmente:
+
+nodemon --inspect ./server.js 80
+Se você tiver um package.jsonarquivo para o seu aplicativo, poderá omitir completamente o script principal e o nodemon lerá o package.jsonpara a mainpropriedade e usará esse valor como o aplicativo.
+
+O nodemon também procurará a scripts.startpropriedade em package.json(a partir do nodemon 1.1.x).
+
+Verifique também as perguntas frequentes ou os problemas do nodemon.
+
+Re-execução automática
+O nodemon foi originalmente escrito para reiniciar processos paralisados, como servidores da Web, mas agora suporta aplicativos que saem corretamente. Se o seu script sair corretamente, o nodemon continuará monitorando o diretório (ou diretórios) e reiniciando o script se houver alguma alteração.
+
+Reinicialização manual
+Enquanto o nodemon estiver em execução, se você precisar reiniciar manualmente o aplicativo, em vez de parar e reiniciar o nodemon, você poderá digitar rscom um retorno de carro e o nodemon reiniciará o processo.
+
+Arquivos de configuração
+O nodemon suporta arquivos de configuração local e global. Eles geralmente são nomeados nodemon.jsone podem ser localizados no diretório de trabalho atual ou no diretório inicial. Um arquivo de configuração local alternativo pode ser especificado com a --config <file>opção
+
+A especificidade é a seguinte, para que um argumento de linha de comando sempre substitua as configurações do arquivo de configuração:
+
+argumentos da linha de comando
+configuração local
+configuração global
+Um arquivo de configuração pode usar qualquer um dos argumentos da linha de comandos como valores de chave JSON, por exemplo:
+
+{
+  " detalhado " : verdadeiro , 
+  " ignore " : [ " * .test.js " , " fixtures / * " ] ,  
+  " execMap " : { 
+    " rb " : " ruby " , 
+    " pde " : " processando --sketch = {{pwd}} --run " 
+  }
+}
+O nodemon.jsonarquivo acima pode ser minha configuração global, para que eu tenha suporte para arquivos ruby ​​e arquivos de processamento, e eu possa executar nodemon demo.pdee o nodemon saberá automaticamente como executar o script, mesmo que esteja pronto para o processamento de scripts.
+
+Um outro exemplo de opções pode ser visto em sample-nodemon.md
+
+package.json
+Se você deseja manter todas as suas configurações de pacote em um só lugar, o nodemon suporta o uso package.jsonpara configuração. Especifique a configuração no mesmo formato que você faria para um arquivo de configuração, mas nodemonConfigno package.jsonarquivo, por exemplo, faça o seguinte package.json:
+
+{
+  " name " : " nodemon " , 
+  " página inicial " : " http://nodemon.io " , 
+  " ... " : " ... outros valores padrão do package.json " , 
+  " nodemonConfig " : { 
+    " ignorar " : [ " test / * " , " docs / * " ] ,  
+    " atraso " : " 2500 " 
+  }
+}
+Observe que, se você especificar um --configarquivo ou fornecer um local, nodemon.jsonqualquer package.jsonconfiguração será ignorada.
+
+Esta seção precisa de uma documentação melhor, mas por enquanto você também pode ver nodemon --help config( também aqui ) .
+
+Usando nodemon como um módulo
+Por favor, consulte doc / requireable.md
+
+Usando nodemon como processo filho
+Por favor, consulte doc / events.md
+
+Executando Scripts Não-Nó
+O nodemon também pode ser usado para executar e monitorar outros programas. nodemon lerá a extensão de arquivo do script que está sendo executado e monitorará essa extensão em vez de .jsse não houver nodemon.json:
+
+nodemon --exec  " python -v "  ./app.py
+Agora o nodemon será executado app.pycom o python no modo detalhado (observe que, se você não estiver passando argumentos para o programa exec, não precisará das aspas), procure por arquivos novos ou modificados com a .pyextensão.
+
+Executáveis ​​padrão
+Usando o nodemon.jsonarquivo de configuração, você pode definir seus próprios executáveis ​​padrão usando a execMappropriedade Isso é particularmente útil se você estiver trabalhando com um idioma que não é suportado por padrão pelo nodemon.
+
+Para adicionar suporte ao nodemon para saber sobre a .plextensão (para Perl), o nodemon.jsonarquivo adicionaria:
+
+{
+  " execMap " : { 
+    " pl " : " perl " 
+  }
+}
+Agora executando o seguinte, o nodemon saberá usar perlcomo executável:
+
+nodemon script.pl
+Geralmente, é recomendável usar o global nodemon.jsonpara adicionar suas próprias execMapopções. No entanto, se houver um padrão comum ausente, ele poderá ser mesclado ao projeto para que o nodemon o suporte por padrão, alterando o default.js e enviando uma solicitação pull.
+
+Monitorando vários diretórios
+Por padrão, o nodemon monitora o diretório de trabalho atual. Se você deseja assumir o controle dessa opção, use a --watchopção para adicionar caminhos específicos:
+
+nodemon --watch app --watch libs app / server.js
+Agora, o nodemon será reiniciado apenas se houver alterações no diretório ./appou ./libs. Por padrão, o nodemon percorre subdiretórios, portanto não há necessidade de incluir explicitamente subdiretórios.
+
+Não use o unix globbing para passar vários diretórios, por exemplo --watch ./lib/*, ele não funcionará. Você precisa de um --watchsinalizador por diretório assistido.
+
+Especificando a lista de observação de extensões
+Por padrão, nodemon procura por arquivos com os .js, .mjs, .coffee, .litcoffee, e .jsonextensões. Se você usar a --execopção e monitorar, o app.pynodemon monitorará os arquivos com a extensão .py. No entanto, você pode especificar sua própria lista com a opção -e(ou --ext) da seguinte maneira:
+
+nodemon -e js, pug
+Agora nodemon vai reiniciar em quaisquer alterações em arquivos no diretório (ou subdiretórios) com as extensões .js, .pug.
+
+Ignorando arquivos
+Por padrão, o nodemon será reiniciado apenas quando um .jsarquivo JavaScript for alterado. Em alguns casos, você desejará ignorar alguns arquivos, diretórios ou padrões de arquivos específicos, para impedir que o nodemon reinicie prematuramente seu aplicativo.
+
+Isso pode ser feito através da linha de comando:
+
+nodemon --ignore lib / --ignore testes /
+Ou arquivos específicos podem ser ignorados:
+
+nodemon --ignore lib / app.js
+Os padrões também podem ser ignorados (mas não deixe de citar os argumentos):
+
+nodemon --ignore  ' lib / *. js '
+Note que, por padrão, nodemon irá ignorar os .git, node_modules, bower_components, .nyc_output, coveragee .sass-cachediretórios e adicionar seus padrões ignoradas para a lista. Se você realmente deseja assistir a um diretório como node_modules, precisa substituir as regras de ignição padrão subjacentes .
+
+O aplicativo não está sendo reiniciado
+Em alguns ambientes de rede (como um contêiner executando a leitura de nodemon em uma unidade montada), você precisará usar o legacyWatch: trueque permite a pesquisa de Chokidar.
+
+Através da CLI, use um --legacy-watchou -Lpara abreviar:
+
+nodemon -L
+Embora esse deva ser o último recurso, ele pesquisará todos os arquivos que encontrar.
+
+Atraso na reinicialização
+Em algumas situações, convém esperar até que vários arquivos sejam alterados. O tempo limite antes de verificar se há novas alterações no arquivo é de 1 segundo. Se você estiver carregando vários arquivos e estiver demorando alguns segundos, isso poderá fazer com que seu aplicativo reinicie várias vezes desnecessariamente.
+
+Para adicionar uma aceleração extra ou atrasar a reinicialização, use o --delaycomando:
+
+nodemon --day 10 server.js
+Para mais precisão, milissegundos podem ser especificados. Ou como um flutuador:
+
+nodemon --delay 2.5 server.js
+Ou usando o especificador de tempo (ms):
+
+nodemon --delay 2500ms server.js
+O número de atraso é o número de segundos (ou milissegundos, se especificado) a atrasar antes de reiniciar. Portanto, o nodemon reiniciará seu aplicativo apenas o número especificado de segundos após a última alteração do arquivo.
+
+Se você estiver configurando esse valor nodemon.json, ele sempre será interpretado em milissegundos. Por exemplo, o seguinte é equivalente:
+
+nodemon --delay 2.5
+ 
+{
+  " atraso " :  " 2500 "
+}
+Recarregando graciosamente seu script
+É possível que o nodemon envie qualquer sinal que você especificar para o seu aplicativo.
+
+nodemon --signal SIGHUP server.js
+Seu aplicativo pode lidar com o sinal da seguinte maneira.
+
+processo . uma vez ( " SIGHUP " , function ( ) {   
+  reloadSomeConfiguration ( ) ;
+} )
+Observe que o nodemon enviará esse sinal para todos os processos na árvore de processos.
+
+Se você estiver usando cluster, cada trabalhador (assim como o mestre) receberá o sinal. Se você deseja encerrar todos os trabalhadores ao receber um SIGHUP, um padrão comum é capturar SIGHUPo mestre e encaminhar SIGTERMa todos os trabalhadores, garantindo que todos os trabalhadores ignorem SIGHUP.
+
+if ( cluster . isMaster ) {  
+  processo . on ( " SIGHUP " , function ( ) {   
+    for ( const worker de Object . values ( cluster . workers ) ) {     
+      trabalhador . processo . matar ( " SIGTERM " ) ;
+    }
+  } ) ;
+} mais {  
+  processo . on ( " SIGHUP " , função ( ) { } )  
+}
+Controlando o desligamento do seu script
+O nodemon envia um sinal de interrupção para o seu aplicativo quando ele vê uma atualização de arquivo. Se você precisar limpar o desligamento dentro do seu script, poderá capturar o sinal de morte e manipular você mesmo.
+
+O exemplo a seguir escutará uma vez o SIGUSR2sinal (usado pelo nodemon para reiniciar), execute o processo de limpeza e se matará para que o nodemon continue o controle:
+
+processo . uma vez ( ' SIGUSR2 ' , function ( ) {   
+  gracefulShutdown ( function ( )  { 
+    processo . kill ( processo . pid , ' SIGUSR2 ' )  ;
+  } ) ;
+} ) ;
+Observe que isso process.killé chamado apenas quando os trabalhos de desligamento são concluídos. Gorjeta de chapéu para Benjie Gillam por escrever esta técnica.
+
+Acionando Eventos quando o Estado do Nódemon Mudar
+Se você deseja notificações semelhantes a rosnados quando o nodemon for reiniciado ou acionar uma ação quando um evento acontecer, será possível requirenodemon ou adicionar ações de eventos ao seu nodemon.jsonarquivo.
+
+Por exemplo, para acionar uma notificação em um Mac quando o nodemon for reiniciado, nodemon.jsoné assim:
+
+{
+  " eventos " : { 
+    " restart " : " osascript -e 'display notification  \" app reiniciado \ "  com o título  \" nodemon \ " ' " 
+  }
+}
+Uma lista completa de eventos disponíveis está listada no wiki de estados do evento . Observe que você pode vincular a estados e mensagens.
+
+Conduza a saída para outro lugar
+nodemon ( {
+  script : ... , 
+  stdout : false //  important: isso indica ao nodemon para não gerar saída para o console  
+} ) . on ( ' legível ' , function ( ) { //  o evento `legível` indica que os dados estão prontos para serem coletados   
+  isso . stdout . pipe ( fs . createWriteStream ( ' output.txt ' ) ) ;
+  isso . stderr . pipe ( fs . createWriteStream ( ' err.txt ' ) ) ;
+} ) ;
+Usando nodemon em seu fluxo de trabalho gulp
+Confira o plug - in gulp-nodemon para integrar o nodemon ao restante do fluxo de trabalho gulp do seu projeto.
+
+Usando nodemon em seu fluxo de trabalho Grunt
+Confira o plug - in grunt-nodemon para integrar o nodemon ao restante do fluxo de trabalho do seu projeto.
+
+Pronúncia
+nodemon, é pronunciado: node-mon, no-demon ou node-e-mon (como pokémon)?
+
+Bem ... já me perguntaram isso várias vezes antes. Eu gosto que já me perguntaram isso antes. Houve apostas sobre qual é realmente.
+
+A resposta é simples, mas possivelmente frustrante. Não estou dizendo (como pronuncio). Cabe a você chamá-lo como quiser. Todas as respostas estão corretas :)
